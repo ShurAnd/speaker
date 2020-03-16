@@ -18,4 +18,13 @@ public class Message {
 	private Long id;
 	private String message;
 	private String tag;
+	
+	public Message() {
+		
+	}
+	
+	public Message(String message, String tag) {
+		this.message = message;
+		this.tag = tag;
+	}
 }
