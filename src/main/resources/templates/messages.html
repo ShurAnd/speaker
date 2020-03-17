@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Messages</title>
+</head>
+<body>
+	<form method="POST" th:action="@{/messages}">
+		<input type="text" name="text" placeHolder="Enter the message">
+		<input type="text" name="tag" placeHolder="Enter the tag">
+		
+		<button type="submit">Добавить</button>
+	
+	</form>
+	
+	<div>Поиск по тегу</div>
+	
+	<form method="post" th:action="@{/messages/filter}">
+		<input type="text" name="filter" placeHolder="enter the tag">
+		
+		<button type="submit">Поиск</button>
+	</form>
+	
+	<div>Список сообщений</div>
+	<div th:each="message : ${messages}">
+		<b>[[${message.id}]]</b>
+		<span>[[${message.message}]]</span>
+		<i>[[${message.tag}]]</i>
+	</div>
+</body>
+</html>
