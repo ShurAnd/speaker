@@ -9,15 +9,16 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
-
+	
 	@Autowired
-	private DataSource dataSource;
+	private UserDetailsService userDetailsService;
 	
 	@Bean
 	public PasswordEncoder encoder() {
@@ -39,10 +40,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	@Override
 	public void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.jdbcAuthentication()
-			.dataSource(dataSource)
-			.passwordEncoder(encoder())
-			.usersByUsernameQuery("select username, password, active from usr where username=?")
-			.authoritiesByUsernameQuery("select u.username, ur.roles from usr u inner join user_role ur on u.id=ur.usr_id where u.username=?");
+		auth.userDetailsService(userDetailsService)
+			.passwordEncoder(encoder());
+
 	}
 }
