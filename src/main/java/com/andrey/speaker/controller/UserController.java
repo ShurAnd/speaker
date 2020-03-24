@@ -50,7 +50,8 @@ public class UserController {
 	}
 	
 	@PostMapping("/edit/{id}")
-	public String processEditUser(@ModelAttribute User user, @RequestParam String[] roles) {
+	public String processEditUser(@PathVariable("id") Long id, @RequestParam String[] roles) {
+		User user = usrRepo.findById(id).get();
 		user.getRoles().clear();
 		user.setRoles(Arrays.stream(roles).map((stringRole) -> Role.valueOf(stringRole)).collect(Collectors.toSet()));
 		
