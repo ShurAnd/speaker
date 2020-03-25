@@ -8,6 +8,7 @@
 	<form method="post" th:action="@{/logout}">
 		<button type="submit">logout</button>
 	</form>
+	<span> <a th:href="@{/user}">admin panel</a></span>
 
 	<form method="POST" th:action="@{/messages}">
 		<input type="text" name="text" placeHolder="Enter the message">
@@ -19,8 +20,8 @@
 	
 	<div>Поиск по тегу</div>
 	
-	<form method="post" th:action="@{/messages/filter}">
-		<input type="text" name="filter" placeHolder="enter the tag">
+	<form method="get" th:action="@{/messages}">
+		<input type="text" name="filter" placeHolder="enter the tag" th:value="${filter}">
 		
 		<button type="submit">Поиск</button>
 	</form>
@@ -30,6 +31,7 @@
 		<b>[[${message.id}]]</b>
 		<span>[[${message.message}]]</span>
 		<i>[[${message.tag}]]</i>
+		<strong>[[${message.authorName}]]</strong>
 	</div>
 </body>
 </html>
