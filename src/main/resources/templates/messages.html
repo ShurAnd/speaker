@@ -10,9 +10,10 @@
 	</form>
 	<span> <a th:href="@{/user}">admin panel</a></span>
 
-	<form method="POST" th:action="@{/messages}">
+	<form method="POST" th:action="@{/messages}" enctype="multipart/form-data">
 		<input type="text" name="text" placeHolder="Enter the message">
 		<input type="text" name="tag" placeHolder="Enter the tag">
+		<input type="file" name="file"/>
 		
 		<button type="submit">Добавить</button>
 	
@@ -28,10 +29,12 @@
 	
 	<div>Список сообщений</div>
 	<div th:each="message : ${messages}">
-		<b>[[${message.id}]]</b>
 		<span>[[${message.message}]]</span>
 		<i>[[${message.tag}]]</i>
 		<strong>[[${message.authorName}]]</strong>
+		<div>
+			<img th:src="@{/img/{filename}(filename=${message.filename})}"/>
+		</div>
 	</div>
 </body>
 </html>

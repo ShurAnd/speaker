@@ -1,31 +1,26 @@
 package com.andrey.speaker.controller;
 
-import java.util.Collections;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.andrey.speaker.domain.Role;
 import com.andrey.speaker.domain.User;
-import com.andrey.speaker.persistence.UserRepository;
+import com.andrey.speaker.service.UserService;
 
 @Controller
 @RequestMapping("/register")
 public class RegisterController {
 	
-	private UserRepository usrRepo;
-	private PasswordEncoder encoder;
+	private UserService userService;
 	
 	@Autowired
-	public RegisterController(UserRepository usrRepo, PasswordEncoder encoder) {
-		this.usrRepo = usrRepo;
-		this.encoder = encoder;
+	public RegisterController(UserService userService) {
+		this.userService = userService;
 	}
 
 	@GetMapping
@@ -40,17 +35,28 @@ public class RegisterController {
 	@PostMapping
 	public ModelAndView processRegistration(@ModelAttribute User user) {
 		ModelAndView view = new ModelAndView();
-		User checkedUser = usrRepo.findUserByUsername(user.getUsername());
-		if (checkedUser != null) {
+		boolean resultOfAdding = userService.addUser(user);
+		if (!resultOfAdding) {
 			view.setViewName("redirect:/register");
 			view.addObject("message", "User exist, pls select another username");
-			return view;
+		} else {
+			view.setViewName("redirect:/login");
 		}
-		user.setPassword(encoder.encode(user.getPassword()));
-		user.setActive(true);
-		user.setRoles(Collections.singleton(Role.USER));
-		usrRepo.save(user);
-		view.setViewName("redirect:/login");
+
+		return view;
+	}
+	
+	@GetMapping("/activation/{code}")
+	public ModelAndView activate(@PathVariable String code) {
+		ModelAndView view = new ModelAndView("login");
+		boolean isActivated = userService.activateUser(code);
+		
+		if (isActivated) {
+			view.addObject("message", "Code successfully activated!");
+		}else {
+			view.addObject("message", "Actiobation code not found");
+		}
+		
 		return view;
 	}
 }

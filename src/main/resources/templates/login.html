@@ -6,9 +6,10 @@
 </head>
 <body>
 <div>Login page</div>
+[[${message}]]
 <form method="post" th:action="@{/login}">
-	<input type="text" name="username">
-	<input type="password" name="password">
+	<label for="username">Username</label><input type="text" name="username">
+	<label for="password">Password</label><input type="password" name="password">
 	
 	<button type="submit">Login</button>
 </form>
