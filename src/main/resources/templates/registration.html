@@ -6,11 +6,19 @@
 </head>
 <body>
 <div>Registration page</div>
-<div>[[${message}]]</div>
+[[${message}]]
 <form method="post" th:action="@{/register}" th:object="${user}">
-	<input type="text" name="username" th:field="*{username}">
-	<input type="password" name="password" th:field="*{password}">
-	
+	<table>
+		<tr>
+			<td><label for="username">Username</label></td><td><input type="text" name="username" th:field="*{username}"></td>
+		</tr>
+		<tr>
+			<td><label for="password">Password</label></td><td><input type="password" name="password" th:field="*{password}"></td>
+		</tr>
+		<tr>
+			<td><label for="mail">Email</label></td><td><input type="email" name="mail" th:field="*{mail}"></td>
+		</tr>
+	</table>
 	<button type="submit">register</button>
 </form>
 </body>
