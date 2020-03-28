@@ -1,7 +1,9 @@
 package com.andrey.speaker.service;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -48,16 +50,20 @@ public class UserService implements UserDetailsService{
 		user.setRoles(Collections.singleton(Role.USER));
 		user.setActivationCode(UUID.randomUUID().toString());
 		
+		sendActivationCode(user);
+		
+		usrRepo.save(user);
+		
+		return true;
+	}
+	
+	public void sendActivationCode(User user) {
 		if(!StringUtils.isEmpty(user.getMail())) {
 			String text = String.format("Welcome to speaker dear %s!\n"
 					+ 					" please confirm your email address with that link\n"
 					+ 					" http://localhost:8080/register/activation/%s", user.getUsername(), user.getActivationCode());	
 			mailService.send(user.getMail(), "Activation code", text);
 		}
-		
-		usrRepo.save(user);
-		
-		return true;
 	}
 
 	public boolean activateUser(String code) {
@@ -69,6 +75,38 @@ public class UserService implements UserDetailsService{
 		}
 		
 		return false;
+	}
+	
+	public void updateProfile(User user, String password, String mail) {
+		boolean isMailChanged = false;
+		String userMail = user.getMail();
+		if (userMail != null) {
+			isMailChanged = !userMail.equals(mail);
+		}
+		if (isMailChanged) {
+			user.setMail(mail);
+			if (!StringUtils.isEmpty(mail)) {
+				user.setActivationCode(UUID.randomUUID().toString());
+			}
+		}
+		
+		if (!StringUtils.isEmpty(password)) {
+			user.setPassword(encoder.encode(password));
+		}
+		
+		usrRepo.save(user);
+		
+		if (isMailChanged) {
+			sendActivationCode(user);
+		}
+	}
+
+	public void editUserRoles(User user, String[] roles) {
+		user.getRoles().clear();
+		user.setRoles(Arrays.stream(roles).map((stringRole) -> Role.valueOf(stringRole)).collect(Collectors.toSet()));
+		
+		usrRepo.save(user);
+		
 	}
 
 }

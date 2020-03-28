@@ -9,6 +9,7 @@
 		<button type="submit">logout</button>
 	</form>
 	<span> <a th:href="@{/user}">admin panel</a></span>
+	<span> <a th:href="@{/user/profile}">profile</a></span>
 
 	<form method="POST" th:action="@{/messages}" enctype="multipart/form-data">
 		<input type="text" name="text" placeHolder="Enter the message">
