@@ -71,6 +71,12 @@
 		    <version>2.2.5.RELEASE</version>
 		</dependency>
 
+			<!-- https://mvnrepository.com/artifact/org.flywaydb/flyway-core -->
+		<dependency>
+		    <groupId>org.flywaydb</groupId>
+		    <artifactId>flyway-core</artifactId>
+		    <version>6.3.2</version>
+		</dependency>
 		
 		
 		
