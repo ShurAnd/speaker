@@ -54,7 +54,7 @@ public class RegisterController {
 		if (isActivated) {
 			view.addObject("message", "Code successfully activated!");
 		}else {
-			view.addObject("message", "Actiobation code not found");
+			view.addObject("message", "Activation code not found");
 		}
 		
 		return view;
