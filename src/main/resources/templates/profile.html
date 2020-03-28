@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>registration</title>
+</head>
+<body>
+<div>Profile page</div>
+[[${message}]]
+<form method="post" th:action="@{/user/profile}" th:object="${user}">
+	<table>
+		<tr>
+			<td><label for="username">[[${username}]]</label></td>
+		</tr>
+		<tr>
+			<td><label for="password">Password</label></td><td><input type="password" name="password" th:value="${password}"></td>
+		</tr>
+		<tr>
+			<td><label for="mail">Email</label></td><td><input type="email" name="mail" th:value="${mail}"></td>
+		</tr>
+	</table>
+	<button type="submit">save</button>
+</form>
+</body>
+</html>
