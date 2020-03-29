@@ -1,4 +1,5 @@
-create sequence hibernate_sequence start 1 increment 1;
+CREATE SEQUENCE hibernate_sequence 
+  START 2;
 create table messages 
 					(id int8 not null,
 					filename varchar(255),

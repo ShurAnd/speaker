@@ -1,41 +1,67 @@
 <!DOCTYPE html>
 <html xmlns:th="www.thymeleaf.org">
-<head>
+<head th:insert="parts/bsheader::header">
 <meta charset="UTF-8">
 <title>Messages</title>
 </head>
 <body>
-	<form method="post" th:action="@{/logout}">
-		<button type="submit">logout</button>
-	</form>
-	<span> <a th:href="@{/user}">admin panel</a></span>
-	<span> <a th:href="@{/user/profile}">profile</a></span>
+<div th:insert="parts/bsheader::bsnavbar"></div>
+<div class="container mt-5">
 
-	<form method="POST" th:action="@{/messages}" enctype="multipart/form-data">
-		<input type="text" name="text" placeHolder="Enter the message">
-		<input type="text" name="tag" placeHolder="Enter the tag">
-		<input type="file" name="file"/>
-		
-		<button type="submit">Добавить</button>
-	
-	</form>
-	
 	<div>Поиск по тегу</div>
-	
-	<form method="get" th:action="@{/messages}">
-		<input type="text" name="filter" placeHolder="enter the tag" th:value="${filter}">
-		
-		<button type="submit">Поиск</button>
-	</form>
-	
-	<div>Список сообщений</div>
-	<div th:each="message : ${messages}">
-		<span>[[${message.message}]]</span>
-		<i>[[${message.tag}]]</i>
-		<strong>[[${message.authorName}]]</strong>
-		<div>
-			<img th:src="@{/img/{filename}(filename=${message.filename})}"/>
+	<div class="form-row">
+		<div class="form-group col-md-6">
+			<form method="get" th:action="@{/messages}" class="form-inline">
+			    
+					<input type="text" name="filter" placeHolder="enter the tag" class="form-control" th:value="${filter}">
+					<button type="submit" class="btn btn-primary ml-3">Поиск</button>
+				
+			</form>
 		</div>
 	</div>
+
+	
+	 <a class="btn btn-primary" data-toggle="collapse" href="#addMessage" role="button" aria-expanded="false" aria-controls="collapseExample">
+    	Add message
+ 	 </a>
+	<div class="collapse" id="addMessage">
+		<div class="form-group mt-3">
+			<form method="POST" th:action="@{/messages}" enctype="multipart/form-data">
+				<div class="form-group">
+				<input type="text" name="text" placeHolder="Enter the message" class="form-control">
+				</div>
+				<div class="form-group">
+				<input type="text" name="tag" placeHolder="Enter the tag" class="form-control">
+				</div>
+				<div class="form-group">
+				<div class="custom-file">
+					<label class="custom-file-label" for="customFile">Choose File</label>
+					<input type="file" name="file" id="customFile">
+				</div>
+				</div>
+				<button type="submit" class="btn btn-primary">Добавить</button>
+			</form>
+		</div>
+	</div>
+	
+	<div class="card-columns">
+	<div th:each="message : ${messages}">
+		<div class="card mt-3" style="width: 15rem;">
+		<div>
+			<img class="card-img-top" th:src="@{/img/{filename}(filename=${message.filename})}"/>
+		</div>
+		<div class="m-2">
+		<span>[[${message.message}]]</span>
+		<i>[[${message.tag}]]</i>
+		</div>
+		<div class="card-footer text-muted">
+			<strong>[[${message.authorName}]]</strong>
+		</div>
+		</div>
+	</div>
+	</div>
+	
+</div>
+<div th:insert="parts/bsheader::bsscripts"></div>
 </body>
 </html>

@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="www.thymeleaf.org">
-<head>
+<head th:insert="parts/bsheader::header">
 <meta charset="UTF-8">
 <title>user list</title>
 </head>
 <body>
+<div th:insert="parts/bsheader::bsnavbar"></div>
+<div class="container mt-5" >
 	[[${user.username}]]</br>
 	<form method="POST" th:action="@{/user/edit/{id}(id=${user.id})}" th:object="${user}">
 		<table>
@@ -25,5 +27,7 @@
 		</br>
 		<button type="submit"> Save</button>
 	</form>
+</div>
+	<div th:insert="parts/bsheader::bsscripts"></div>
 </body>
 </html>
