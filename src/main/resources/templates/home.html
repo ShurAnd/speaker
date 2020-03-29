@@ -1,11 +1,16 @@
 <!DOCTYPE html>
-<html xmlns:th="www.thymeleaf.org">
-<head>
-<meta charset="UTF-8">
-<title>Welcome</title>
+<html xmlns:th="https://www.thymeleaf.org"
+  xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:insert="parts/bsheader::header">
+	<meta charset="UTF-8">
+	<title>Welcome</title>	
 </head>
 <body>
-	<div> Welcome [[${name}]]!</div>
-	<a th:href="@{/messages}">speaker</a>
+<div th:insert="parts/bsheader::bsnavbar"></div>
+<div class="container mt-5">
+	<h5>Welcome!</h5>
+	<div> This is test project</div>
+</div>
+<div th:insert="parts/bsheader::bsscripts"></div>
 </body>
 </html>
