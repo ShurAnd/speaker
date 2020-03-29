@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,18 +19,21 @@ import org.springframework.web.servlet.ModelAndView;
 import com.andrey.speaker.domain.Message;
 import com.andrey.speaker.domain.User;
 import com.andrey.speaker.persistence.MessageRepository;
+import com.andrey.speaker.service.MessageService;
 
 @Controller
 @RequestMapping("/messages")
 public class MessagesController {
 
 	private MessageRepository msgRepo;
+	private MessageService messageService;
 	@Value("${upload.path}")
 	private String uploadPath;
 	
 	@Autowired
-	public MessagesController(MessageRepository msgRepo) {
+	public MessagesController(MessageRepository msgRepo, MessageService messageService) {
 		this.msgRepo = msgRepo;
+		this.messageService = messageService;
 	}
 	
 	// Fetches all messages from db
@@ -73,6 +77,13 @@ public class MessagesController {
 			message.setFilename(resultFileName);
 		}
 		msgRepo.save(message);
+		
+		return "redirect:/messages";
+	}
+	
+	@GetMapping("/delete/{id}")
+	public String deleteMessageById(@PathVariable Long id) {
+		messageService.deleteMessageById(id);
 		
 		return "redirect:/messages";
 	}

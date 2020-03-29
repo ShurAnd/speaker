@@ -47,7 +47,7 @@
 	<div class="card-columns">
 	<div th:each="message : ${messages}">
 		<div class="card mt-3" style="width: 15rem;">
-		<div>
+		<div  th:if="${message.filename}">
 			<img class="card-img-top" th:src="@{/img/{filename}(filename=${message.filename})}"/>
 		</div>
 		<div class="m-2">
@@ -56,6 +56,9 @@
 		</div>
 		<div class="card-footer text-muted">
 			<strong>[[${message.authorName}]]</strong>
+		</div>
+		<div sec:authorize="hasAuthority('ADMIN')">
+		<a th:href="@{/messages/delete/{id}(id=${message.id})}">delete</a>
 		</div>
 		</div>
 	</div>
