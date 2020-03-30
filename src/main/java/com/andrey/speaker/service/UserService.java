@@ -35,8 +35,10 @@ public class UserService implements UserDetailsService{
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		// TODO Auto-generated method stub
-		return usrRepo.findUserByUsername(username);
+		User user = usrRepo.findUserByUsername(username);
+		if (user == null) throw new UsernameNotFoundException("No such user");
+		
+		return user;
 	}
 	
 	public boolean addUser(User user) {

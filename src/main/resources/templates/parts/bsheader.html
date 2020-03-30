@@ -44,15 +44,23 @@
 	      <li sec:authorize="isAuthenticated()" class="nav-item">
 	        <a class="nav-link" href="/user/profile">Profile</a>
 	      </li>
-	     
+	    	 
 	    </ul>
-	   <div class="navbar-text ml-auto mr-3" sec:authorize="isAuthenticated()">
+	    <div class="navbar-text ml-auto mr-3" sec:authorize="isAuthenticated()">
      	 <span sec:authentication="name"></span>
    	    </div>
    	    
-   	    <form method="post" th:action="@{/logout}">
-   	    	 <button type="submit" class="btn btn-primary">Logout</button>
-   	    </form>
+   	    <div class="nav-item ml-auto" sec:authorize="!isAuthenticated()">
+	   	    <form method="get" th:action="@{/login}">
+	   	    	 <button type="submit" class="btn btn-primary">Login</button>
+	   	    </form>
+   	    </div>
+   	    
+   	    <div sec:authorize="isAuthenticated()">
+	   	    <form method="post" th:action="@{/logout}">
+	   	    	 <button type="submit" class="btn btn-primary">Logout</button>
+	   	    </form>
+   	    </div>
    	    
 	  </div>
 	  </nav>

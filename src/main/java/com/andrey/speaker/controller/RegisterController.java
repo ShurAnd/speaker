@@ -1,7 +1,12 @@
 package com.andrey.speaker.controller;
 
+import java.util.Map;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.andrey.speaker.domain.User;
+import com.andrey.speaker.service.ControllerUtils;
 import com.andrey.speaker.service.UserService;
 
 @Controller
@@ -33,16 +39,28 @@ public class RegisterController {
 	}
 	
 	@PostMapping
-	public ModelAndView processRegistration(@ModelAttribute User user) {
-		ModelAndView view = new ModelAndView();
+	public ModelAndView processRegistration(@Valid @ModelAttribute User user,
+											BindingResult bindingResult) {
+		ModelAndView view = new ModelAndView("registration");
+		boolean passwordConfirmation = false;
+		if (!user.getPassword().equals(user.getPassword2())) {
+			passwordConfirmation = true;
+			view.addObject("password2Error", "Password confirmed incorrectly!");
+		}
+		
+		if (bindingResult.hasErrors() || passwordConfirmation) {
+			Map<String, String> errors = ControllerUtils.getErrors(bindingResult);
+			view.getModelMap().mergeAttributes(errors);
+			return view;
+		}
+		
 		boolean resultOfAdding = userService.addUser(user);
 		if (!resultOfAdding) {
-			view.setViewName("redirect:/register");
 			view.addObject("message", "User exist, pls select another username");
 		} else {
 			view.setViewName("redirect:/login");
 		}
-
+		
 		return view;
 	}
 	

@@ -7,7 +7,9 @@
 <body>
 <div th:insert="parts/bsheader::bsnavbar"></div>
 <div class="container mt-5">
-[[${message}]]
+<div th:if="${session['SPRING_SECURITY_LAST_EXCEPTION']}" class="alert alert-danger" role="alert">
+  <span th:text="${session['SPRING_SECURITY_LAST_EXCEPTION']?.message}"></span>
+</div>
 <form method="post" th:action="@{/login}">
 	<div class="form-group row">
 		<label for="username" class="col-sm-2 col-form-label">Username</label>
