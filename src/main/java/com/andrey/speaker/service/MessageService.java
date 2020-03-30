@@ -1,6 +1,11 @@
 package com.andrey.speaker.service;
 
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
 import com.andrey.speaker.persistence.MessageRepository;
 
@@ -16,5 +21,4 @@ public class MessageService {
 		messageRepository.deleteById(id);
 		
 	}
-
 }

@@ -19,19 +19,23 @@
 			</form>
 		</div>
 	</div>
-
-	
 	 <a class="btn btn-primary" data-toggle="collapse" href="#addMessage" role="button" aria-expanded="false" aria-controls="collapseExample">
     	Add message
  	 </a>
-	<div class="collapse" id="addMessage">
+	<div th:class="${message} != null ? 'collapse show' : 'collapse'" id="addMessage">
 		<div class="form-group mt-3">
 			<form method="POST" th:action="@{/messages}" enctype="multipart/form-data">
 				<div class="form-group">
-				<input type="text" name="text" placeHolder="Enter the message" class="form-control">
+				<input type="text" name="text" id="text" placeHolder="Enter the message" th:class="${textError != null ? 'form-control is-invalid' : 'form-control'}" th:value="${message?.text}">
+				     <div th:if="${textError != null}" class="invalid-feedback">
+       						<span th:text="${textError}"></span>
+      				 </div>
 				</div>
 				<div class="form-group">
-				<input type="text" name="tag" placeHolder="Enter the tag" class="form-control">
+				<input type="text" id="tag" name="tag" placeHolder="Enter the tag" th:class="${tagError != null ? 'form-control is-invalid' : 'form-control'}">
+					 <div th:if="${textError != null}" class="invalid-feedback">
+       						<span th:text="${textError}"></span>
+      				 </div>
 				</div>
 				<div class="form-group">
 				<div class="custom-file">
@@ -51,7 +55,7 @@
 			<img class="card-img-top" th:src="@{/img/{filename}(filename=${message.filename})}"/>
 		</div>
 		<div class="m-2">
-		<span>[[${message.message}]]</span>
+		<span>[[${message.text}]]</span>
 		<i>[[${message.tag}]]</i>
 		</div>
 		<div class="card-footer text-muted">

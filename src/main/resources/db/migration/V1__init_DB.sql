@@ -3,7 +3,7 @@ CREATE SEQUENCE hibernate_sequence
 create table messages 
 					(id int8 not null,
 					filename varchar(255),
-					message varchar(2048) not null,
+					text varchar(2048) not null,
 					tag varchar(255),
 					user_id int8,
 					primary key (id));
