@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -14,6 +15,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.Email;
@@ -36,14 +39,14 @@ public class User implements UserDetails{
 	private String username;
 	@NotBlank(message="password cant be empty")
 	private String password;
-	@Transient
-	@NotBlank(message="password confirmation cant be empty")
-	private String password2;
 	private boolean active;
 	@Email(message="email isnt correct")
 	@NotBlank(message="email cant be empty")
 	private String mail;
 	private String activationCode;
+	@OneToMany(mappedBy="author", cascade = CascadeType.ALL, fetch= FetchType.LAZY)
+	private Set<Message> messages = new HashSet<>();
+	
 	
 	@ElementCollection(targetClass=Role.class, fetch = FetchType.EAGER)
 	@CollectionTable(name="user_role", joinColumns=@JoinColumn(name="user_id"))
@@ -77,5 +80,20 @@ public class User implements UserDetails{
 	public boolean isEnabled() {
 		// TODO Auto-generated method stub
 		return isActive();
+	}
+	
+	@Override
+	public boolean equals(Object that) {
+		if (this == that) return true;
+		if (this == null || !(that instanceof User)) return false;
+		
+		User user2 = (User)that;
+		return this.id.equals(user2.id);
+	}
+	
+	
+	@Override
+	public String toString() {
+		return username;
 	}
 }

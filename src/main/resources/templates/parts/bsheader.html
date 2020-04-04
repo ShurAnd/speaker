@@ -11,6 +11,7 @@
      		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
    			 <!-- Bootstrap CSS -->
     		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    		<script src="https://www.google.com/recaptcha/api.js" async defer></script>
    </div>
    
    <div th:fragment="bsscripts">
@@ -43,6 +44,10 @@
 	      
 	      <li sec:authorize="isAuthenticated()" class="nav-item">
 	        <a class="nav-link" href="/user/profile">Profile</a>
+	      </li>
+	      
+	      <li sec:authorize="isAuthenticated()" class="nav-item">
+	        <a class="nav-link" th:href="@{/user/user-messages/{id}(id=${currentUser.id})}">My Messages</a>
 	      </li>
 	    	 
 	    </ul>

@@ -47,14 +47,18 @@ public class MessagesController {
 	// Fetches all messages from db
 	
 	@GetMapping
-	public ModelAndView messages(@RequestParam(name="filter", required=false, defaultValue="") String filter) {
+	public ModelAndView messages(
+			@AuthenticationPrincipal User user,
+			@RequestParam(name="filter", required=false, defaultValue="") String filter) {
+		
 		ModelAndView view = new ModelAndView("messages");
-		Iterable<Message> messages;
+	    Iterable<Message> messages;
 		if (filter == null || filter.isEmpty()) {
 			messages = msgRepo.findAll();
 		} else {
 			messages = msgRepo.findMessagesByTag(filter);
 		}
+		view.addObject("currentUser", user);
 		view.addObject("filter", filter);
 		view.addObject("messages", messages);
 		
@@ -70,10 +74,11 @@ public class MessagesController {
 			@AuthenticationPrincipal User user,
 			Model model,
 			@RequestParam MultipartFile file) throws IllegalStateException, IOException {
-		System.out.println("entry point to method");
+		
+		
 		message.setAuthor(user);
 		model.addAttribute("message", message);
-		System.out.println("before binding results");
+		model.addAttribute("currentUser", user);
 		if (bindingResult.hasErrors()) {
 			System.out.println("inside binding results");
 			Map<String, String> errors = ControllerUtils.getErrors(bindingResult);
@@ -106,6 +111,59 @@ public class MessagesController {
 		
 		return "redirect:/messages";
 	}
+	
+	@GetMapping("/edit/{id}")
+	public String editMessageById(@PathVariable Long id,
+								  @AuthenticationPrincipal User user,
+								  Model model) {
+		Message message = msgRepo.findById(id).get();
+		model.addAttribute("message", message);
+		model.addAttribute("currentUser", user);
+		
+		return "editMessage";
+	}
+	
+	@PostMapping("/edit/{id}")
+	public String processEdittingMessage(@AuthenticationPrincipal User user,
+										@Valid Message message,
+										BindingResult bindingResult,
+										Model model,
+										@PathVariable Long id,
+										@RequestParam MultipartFile file) throws IllegalStateException, IOException {
+		model.addAttribute("currentUser", user);
+		Message oldMessage = msgRepo.findById(id).get();
+		if (bindingResult.hasErrors()) {
+			System.out.println("inside binding results");
+			Map<String, String> errors = ControllerUtils.getErrors(bindingResult);
+			model.mergeAttributes(errors);
+			model.addAttribute("message", oldMessage);
+			return "editMessage";
+		}else {
+			System.out.println("outside binding results");
+		if (file != null && !file.getOriginalFilename().isEmpty() && !oldMessage.getFilename().equals(message.getFilename())) {
+			
+			File upload = new File(uploadPath);
+			if (!upload.exists()) {
+				upload.mkdir();
+			}
+			
+			String uuid = UUID.randomUUID().toString();
+			String resultFileName = uuid + file.getOriginalFilename();
+			file.transferTo(new File(upload + "/" + resultFileName));
+			oldMessage.setFilename(resultFileName);
+		}
+		oldMessage.setText(message.getText());
+		oldMessage.setTag(message.getTag());
+		}
+		
+		msgRepo.save(oldMessage);
+		
+		
+		
+		return "redirect:/messages/edit/"+id;
+	}
+	
+	
 
 
 }

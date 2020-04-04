@@ -33,9 +33,6 @@
 				</div>
 				<div class="form-group">
 				<input type="text" id="tag" name="tag" placeHolder="Enter the tag" th:class="${tagError != null ? 'form-control is-invalid' : 'form-control'}">
-					 <div th:if="${textError != null}" class="invalid-feedback">
-       						<span th:text="${textError}"></span>
-      				 </div>
 				</div>
 				<div class="form-group">
 				<div class="custom-file">
@@ -49,7 +46,7 @@
 	</div>
 	
 	<div class="card-columns">
-	<div th:each="message : ${messages}">
+	<div th:if="${messages}" th:each="message : ${messages}">
 		<div class="card mt-3" style="width: 15rem;">
 		<div  th:if="${message.filename}">
 			<img class="card-img-top" th:src="@{/img/{filename}(filename=${message.filename})}"/>
@@ -58,11 +55,21 @@
 		<span>[[${message.text}]]</span>
 		<i>[[${message.tag}]]</i>
 		</div>
-		<div class="card-footer text-muted">
-			<strong>[[${message.authorName}]]</strong>
+		<div th:if=${message} class="card-footer text-muted">
+			<a th:href="@{/user/user-messages/{id}(id=${message.author.id})}">[[${message.author}]]</a>
+		</div>
+		<div th:if="${currentUser.username.equals(message.author.username)}">
+			<form method="get" th:action="@{/messages/edit/{id}(id=${message.id})}">
+	   	    	 <button type="submit" class="btn btn-primary">Edit</button>
+	   	    </form>
 		</div>
 		<div sec:authorize="hasAuthority('ADMIN')">
 		<a th:href="@{/messages/delete/{id}(id=${message.id})}">delete</a>
+		</div>
+		<div sec:authorize="!hasAuthority('ADMIN')">
+			<div th:if="${currentUser.username.equals(message.author.username)}">
+				<a th:href="@{/messages/delete/{id}(id=${message.id})}">delete</a>
+			</div>
 		</div>
 		</div>
 	</div>

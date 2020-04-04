@@ -63,6 +63,13 @@
       				 </div>
 	</div>
 	</div>
+	
+	<div class="col-sm-3">
+	 <div class="g-recaptcha" data-sitekey="6Lc31OUUAAAAAD7ZWOsxeFvahNsUKDvsN06LmXN3"></div>
+			 <div th:if="${recaptchaError}" class="alert alert-danger" role="alert">
+				  <span th:text="${recaptchaError}"></span>
+			</div>
+	</div>
     <div class="col-sm-10">
       <button type="submit" class="btn btn-primary">Register</button>
     </div>
