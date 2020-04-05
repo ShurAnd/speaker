@@ -15,6 +15,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.PreRemove;
 import javax.persistence.Table;
@@ -32,6 +34,10 @@ import lombok.Data;
 @Data
 public class User implements UserDetails{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
@@ -46,6 +52,20 @@ public class User implements UserDetails{
 	private String activationCode;
 	@OneToMany(mappedBy="author", cascade = CascadeType.ALL, fetch= FetchType.LAZY)
 	private Set<Message> messages = new HashSet<>();
+	
+	@ManyToMany
+	@JoinTable(
+			name="subscribers",
+			joinColumns= {@JoinColumn(name = "channel_id")},
+			inverseJoinColumns= {@JoinColumn(name="sub_id")})
+	private Set<User> subscribers = new HashSet<>();
+	
+	@ManyToMany
+	@JoinTable(
+			name="subscribers",
+			joinColumns= {@JoinColumn(name = "sub_id")},
+			inverseJoinColumns= {@JoinColumn(name="channel_id")})
+	private Set<User> subscriptions = new HashSet<>();
 	
 	
 	@ElementCollection(targetClass=Role.class, fetch = FetchType.EAGER)
@@ -88,7 +108,15 @@ public class User implements UserDetails{
 		if (this == null || !(that instanceof User)) return false;
 		
 		User user2 = (User)that;
-		return this.id.equals(user2.id);
+		return this.id.equals(user2.id) && this.username.equals(user2.username);
+	}
+	
+	@Override
+	public int hashCode() {
+		int result = 0;
+		result = 7 * (username.hashCode() + id.hashCode());
+		
+		return result;
 	}
 	
 	

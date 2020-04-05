@@ -35,7 +35,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 			.antMatchers("/", "/register", "/register/activation/*").permitAll()
 			.anyRequest().authenticated()
 		.and()
-			.formLogin().loginPage("/login").defaultSuccessUrl("/messages")
+			.formLogin().loginPage("/login")
 			.permitAll()
 		.and()
 			.rememberMe()
