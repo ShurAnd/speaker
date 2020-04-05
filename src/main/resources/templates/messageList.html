@@ -7,6 +7,42 @@
 <body>
 <div th:insert="parts/bsheader::bsnavbar"></div>
 <div class="container mt-5">
+	<h3>[[${user.username}]]</h3>
+	
+	<div class="container">
+		<div class="row">
+			<div class="col">
+				<div class="card">
+	  				<div class="card-body">	
+		  				<div class="card-title">Subscribers</div>
+		   				<h3 class="card-text"><a th:href="@{/user/subscribers/{id}(id=${user.id})}">[[${subscribers}]]</a></h3> 
+	  				</div>
+				</div>		
+			</div>
+			<div class="col">
+				<div class="card">
+	  				<div class="card-body">	
+		  				<div class="card-title">Subscriptions</div>
+		   				<h3 class="card-text"><a th:href="@{/user/subscriptions/{id}(id=${user.id})}">[[${subscriptions}]]</a></h3> 
+	  				</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	   	<div th:if="${!currentUser.equals(user)}">
+		   	<div th:if="${isSubscriber.equals(false)}">
+		   	    <form method="post" th:action="@{/user/subscribe/{id}(id=${user.id})}">
+		   	    	 <button type="submit" class="btn btn-info mt-3">Subscribe</button>
+		   	    </form>
+	   	    </div>
+	   	    <div th:if="${isSubscriber}">
+		   	    <form method="post" th:action="@{/user/unscribe/{id}(id=${user.id})}">
+		   	    	 <button type="submit" class="btn btn-info mt-3">Unscribe</button>
+		   	    </form>
+	   	    </div>
+   	    </div>
+	
 	
 	<div class="card-columns">
 	<div th:each="message : ${messages}">
@@ -15,7 +51,7 @@
 			<img class="card-img-top" th:src="@{/img/{filename}(filename=${message.filename})}"/>
 		</div>
 		<div class="m-2">
-		<span>[[${message.text}]]</span>
+		<span>[[${message.text}]]</span><br/>
 		<i>[[${message.tag}]]</i>
 		</div>
 		<div class="card-footer text-muted">

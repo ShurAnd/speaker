@@ -96,9 +96,18 @@ public class UserController {
 		
 		User user = usrRepo.findById(id).get();
 		Set<Message> messages = user.getMessages();
+		boolean isSubscriber = false;
+		if (user.getSubscribers().contains(currentUser)) {
+			isSubscriber = true;
+		}
+
+		
 		model.addAttribute("messages", messages);
 		model.addAttribute("user", user);
 		model.addAttribute("currentUser", currentUser);
+		model.addAttribute("subscribers", user.getSubscribers().size());
+		model.addAttribute("subscriptions", user.getSubscriptions().size());
+		model.addAttribute("isSubscriber", isSubscriber);
 		
 		return "messageList";
 	}
@@ -116,5 +125,52 @@ public class UserController {
 		model.addAttribute("currentUser", currentUser);
 		
 		return "editMessage";
+	}
+	
+	@PostMapping("/subscribe/{id}")
+	public String subscribe(@AuthenticationPrincipal User currentUser,
+							@PathVariable Long id) {
+		User user = usrRepo.findById(id).get();
+		userService.subscribe(user, currentUser);
+		
+		return "redirect:/user/user-messages/" + user.getId();
+	}
+	
+	@PostMapping("/unscribe/{id}")
+	public String unscribe(@AuthenticationPrincipal User currentUser,
+							@PathVariable Long id) {
+		User user = usrRepo.findById(id).get();
+		userService.unscribe(user, currentUser);
+		
+		return "redirect:/user/user-messages/" + user.getId();
+	}
+	
+	@GetMapping("/subscribers/{id}")
+	public String checkSubscribers(@AuthenticationPrincipal User currentUser,
+									@PathVariable Long id,
+									Model model) {
+		User user = usrRepo.findById(id).get();
+		Iterable<User> subscribers = user.getSubscribers();
+		model.addAttribute("currentUser", currentUser);
+		model.addAttribute("user", user);
+		model.addAttribute("users", subscribers);
+				
+		
+		return "subs";
+	}
+	
+	
+	@GetMapping("/subscriptions/{id}")
+	public String checkSubscriptions(@AuthenticationPrincipal User currentUser,
+									@PathVariable Long id,
+									Model model) {
+		User user = usrRepo.findById(id).get();
+		Iterable<User> subscriptions = user.getSubscriptions();
+		model.addAttribute("currentUser", currentUser);
+		model.addAttribute("user", user);
+		model.addAttribute("users", subscriptions);
+				
+		
+		return "subs";
 	}
 }
