@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="www.thymeleaf.org">
 <head th:insert="parts/bsheader::header">
-<meta charset="UTF-8">
+<meta charset="UTF-8"/>
 <title>registration</title>
 </head>
 <body>
@@ -18,7 +18,7 @@
 					 name="username" 
 					 th:class="${usernameError != null ? 'form-control is-invalid' : 'form-control'}"
 					  th:value="${user?.username}"
-					  placeholder="type username">
+					  placeholder="type username"/>
 				     <div th:if="${usernameError != null}" class="invalid-feedback">
        						<span th:text="${usernameError}"></span>
       				 </div>
@@ -30,7 +30,7 @@
 		<input type="password"
 				 name="password" 
 				 th:class="${passwordError != null ? 'form-control is-invalid' : 'form-control'}"
-				 placeholder="type password">
+				 placeholder="type password"/>
 					 <div th:if="${passwordError != null}" class="invalid-feedback">
        						<span th:text="${passwordError}"></span>
       				 </div>
@@ -43,7 +43,7 @@
 		<input type="password"
 				 name="password2"
 				  th:class="${password2Error != null ? 'form-control is-invalid' : 'form-control'}"
-				  placeholder="retype password">
+				  placeholder="retype password"/>
 					 <div th:if="${password2Error != null}" class="invalid-feedback">
        						<span th:text="${password2Error}"></span>
       				 </div>
@@ -57,7 +57,7 @@
 				 name="mail"
 				  th:class="${mailError != null ? 'form-control is-invalid' : 'form-control'}" 
 				  th:value="${user?.mail}"
-				  placeholder="type email">
+				  placeholder="type email"/>
 				     <div th:if="${mailError != null}" class="invalid-feedback">
        						<span th:text="${mailError}"></span>
       				 </div>

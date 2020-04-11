@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="www.thymeleaf.org">
 <head th:insert="parts/bsheader::header">
-<meta charset="UTF-8">
+<meta charset="UTF-8"/>
 <title>registration</title>
 </head>
 <body>
@@ -15,10 +15,10 @@
 			<td><label for="username">[[${username}]]</label></td>
 		</tr>
 		<tr>
-			<td><label for="password">Password</label></td><td><input type="password" name="password" th:value="${password}"></td>
+			<td><label for="password">Password</label></td><td><input type="password" name="password" th:value="${password}"/></td>
 		</tr>
 		<tr>
-			<td><label for="mail">Email</label></td><td><input type="email" name="mail" th:value="${mail}"></td>
+			<td><label for="mail">Email</label></td><td><input type="email" name="mail" th:value="${mail}"/></td>
 		</tr>
 	</table>
 	<button type="submit">save</button>
