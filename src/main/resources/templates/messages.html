@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="www.thymeleaf.org">
 <head th:insert="parts/bsheader::header">
-<meta charset="UTF-8">
+<meta charset="UTF-8"/>
 <title>Messages</title>
 </head>
 <body>
 <div th:insert="parts/bsheader::bsnavbar"></div>
+<div th:insert="parts/paginator::paginator"></div>
 <div class="container mt-5">
 
 	<div>Поиск по тегу</div>
@@ -13,7 +14,7 @@
 		<div class="form-group col-md-6">
 			<form method="get" th:action="@{/messages}" class="form-inline">
 			    
-					<input type="text" name="filter" placeHolder="enter the tag" class="form-control" th:value="${filter}">
+					<input type="text" name="filter" placeHolder="enter the tag" class="form-control" th:value="${filter}"/>
 					<button type="submit" class="btn btn-primary ml-3">Поиск</button>
 				
 			</form>
@@ -26,18 +27,18 @@
 		<div class="form-group mt-3">
 			<form method="POST" th:action="@{/messages}" enctype="multipart/form-data">
 				<div class="form-group">
-				<input type="text" name="text" id="text" placeHolder="Enter the message" th:class="${textError != null ? 'form-control is-invalid' : 'form-control'}" th:value="${message?.text}">
+				<input type="text" name="text" id="text" placeHolder="Enter the message" th:class="${textError != null ? 'form-control is-invalid' : 'form-control'}" th:value="${message?.text}"/>
 				     <div th:if="${textError != null}" class="invalid-feedback">
        						<span th:text="${textError}"></span>
       				 </div>
 				</div>
 				<div class="form-group">
-				<input type="text" id="tag" name="tag" placeHolder="Enter the tag" th:class="${tagError != null ? 'form-control is-invalid' : 'form-control'}">
+				<input type="text" id="tag" name="tag" placeHolder="Enter the tag" th:class="${tagError != null ? 'form-control is-invalid' : 'form-control'}"/>
 				</div>
 				<div class="form-group">
 				<div class="custom-file">
 					<label class="custom-file-label" for="customFile">Choose File</label>
-					<input type="file" name="file" id="customFile">
+					<input type="file" name="file" id="customFile"/>
 				</div>
 				</div>
 				<button type="submit" class="btn btn-primary">Добавить</button>
@@ -45,9 +46,9 @@
 		</div>
 	</div>
 	
-	<div class="card-columns">
+	<div class="card-columns" id="message-list">
 	<div th:if="${messages}" th:each="message : ${messages}">
-		<div class="card mt-3" style="width: 15rem;">
+		<div class="card mt-3" style="width: 15rem;" th:data-id="${message?.id}">
 		<div  th:if="${message.filename}">
 			<img class="card-img-top" th:src="@{/img/{filename}(filename=${message.filename})}"/>
 		</div>
@@ -76,6 +77,7 @@
 	</div>
 	
 </div>
+<div th:insert="parts/paginator::paginator"></div>
 <div th:insert="parts/bsheader::bsscripts"></div>
 </body>
 </html>
