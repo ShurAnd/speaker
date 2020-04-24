@@ -72,6 +72,14 @@ public class User implements UserDetails{
 	@CollectionTable(name="user_role", joinColumns=@JoinColumn(name="user_id"))
 	@Enumerated(EnumType.STRING)
 	private Set<Role> roles = new HashSet<>();
+	
+	public boolean isAdmin() {
+		return roles.contains(Role.ADMIN);
+	}
+	
+	public boolean isSubscriber(User user) {
+		return subscribers.contains(user);
+	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

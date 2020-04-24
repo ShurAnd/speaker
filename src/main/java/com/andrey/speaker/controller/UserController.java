@@ -6,10 +6,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,7 +26,9 @@ import org.springframework.web.servlet.ModelAndView;
 import com.andrey.speaker.domain.Message;
 import com.andrey.speaker.domain.Role;
 import com.andrey.speaker.domain.User;
+import com.andrey.speaker.domain.dto.MessageDTO;
 import com.andrey.speaker.persistence.UserRepository;
+import com.andrey.speaker.service.MessageService;
 import com.andrey.speaker.service.UserService;
 
 @Controller
@@ -30,18 +37,19 @@ public class UserController {
 
 	private UserRepository usrRepo;
 	private UserService userService;
+	private MessageService messageService;
 	
 	@Autowired
-	public UserController(UserRepository usrRepo, UserService userService) {
+	public UserController(UserRepository usrRepo, UserService userService, MessageService messageService) {
 		this.usrRepo = usrRepo;
 		this.userService = userService;
+		this.messageService = messageService;
 	}
 	
 	@GetMapping
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ModelAndView showPanel(@AuthenticationPrincipal User user) {
 		ModelAndView view = new ModelAndView("userList");
-		view.addObject("currentUser", user);
 		view.addObject("users", usrRepo.findAll());
 		
 		return view;
@@ -54,7 +62,6 @@ public class UserController {
 		User user = usrRepo.findById(id).get();
 		ModelAndView view = new ModelAndView("editUser");
 		view.addObject("roles", Role.values());
-		view.addObject("currentUser", currentUser);
 		view.addObject("user", user);
 		
 		return view;
@@ -72,9 +79,7 @@ public class UserController {
 	@GetMapping("/profile")
 	public ModelAndView showProfile(@AuthenticationPrincipal User user) {
 		ModelAndView view = new ModelAndView("profile");
-		view.addObject("currentUser", user);
-		view.addObject("username", user.getUsername());
-		view.addObject("mail", user.getMail());
+		view.addObject("user", user);
 		
 		return view;
 	}
@@ -82,7 +87,7 @@ public class UserController {
 	@PostMapping("/profile")
 	public String processProfileEditting(@AuthenticationPrincipal User user,
 										@RequestParam String password,
-										@RequestParam String mail) {
+										@RequestParam String mail) {;
 		
 		userService.updateProfile(user, password, mail);
 		
@@ -92,23 +97,18 @@ public class UserController {
 	@GetMapping("/user-messages/{id}")
 	public String getMessages(@AuthenticationPrincipal User currentUser,
 							  @PathVariable Long id,
-							  Model model) {
-		
+							  Model model,
+							  @PageableDefault(sort= {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
 		User user = usrRepo.findById(id).get();
-		Set<Message> messages = user.getMessages();
-		boolean isSubscriber = false;
-		if (user.getSubscribers().contains(currentUser)) {
-			isSubscriber = true;
-		}
+		Page<MessageDTO> page = messageService.findMessagesByUser(user, pageable, currentUser);
 
 		
-		model.addAttribute("messages", messages);
+		model.addAttribute("messages", page.getContent());
+		model.addAttribute("page", page);
 		model.addAttribute("user", user);
-		model.addAttribute("currentUser", currentUser);
 		model.addAttribute("subscribers", user.getSubscribers().size());
 		model.addAttribute("subscriptions", user.getSubscriptions().size());
-		model.addAttribute("isSubscriber", isSubscriber);
-		
+	
 		return "messageList";
 	}
 	
@@ -122,7 +122,6 @@ public class UserController {
 		Set<Message> messages = user.getMessages();
 		model.addAttribute("messages", messages);
 		model.addAttribute("user", user);
-		model.addAttribute("currentUser", currentUser);
 		
 		return "editMessage";
 	}
@@ -151,7 +150,6 @@ public class UserController {
 									Model model) {
 		User user = usrRepo.findById(id).get();
 		Iterable<User> subscribers = user.getSubscribers();
-		model.addAttribute("currentUser", currentUser);
 		model.addAttribute("user", user);
 		model.addAttribute("users", subscribers);
 				
@@ -166,7 +164,6 @@ public class UserController {
 									Model model) {
 		User user = usrRepo.findById(id).get();
 		Iterable<User> subscriptions = user.getSubscriptions();
-		model.addAttribute("currentUser", currentUser);
 		model.addAttribute("user", user);
 		model.addAttribute("users", subscriptions);
 				

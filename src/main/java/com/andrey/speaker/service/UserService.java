@@ -6,15 +6,18 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.util.StringUtils;
+import org.springframework.util.StringUtils;
 
+import com.andrey.speaker.domain.Message;
 import com.andrey.speaker.domain.Role;
 import com.andrey.speaker.domain.User;
+import com.andrey.speaker.persistence.MessageRepository;
 import com.andrey.speaker.persistence.UserRepository;
 
 @Service
