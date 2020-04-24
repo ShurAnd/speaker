@@ -16,7 +16,6 @@ public class HomeController {
 	@GetMapping
 	public ModelAndView welcome(@AuthenticationPrincipal User user) {
 		ModelAndView view = new ModelAndView("home");
-		view.addObject("currentUser", user);
 		
 		return view;
 	}

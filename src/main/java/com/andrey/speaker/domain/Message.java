@@ -1,11 +1,16 @@
 package com.andrey.speaker.domain;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.PreRemove;
 import javax.persistence.Table;
@@ -53,6 +58,14 @@ public class Message {
 	public String getAuthorName() {
 		return this.author != null  ? author.getUsername() : "<none>";
 	}
+	
+	@ManyToMany
+	@JoinTable(
+			name="likes",
+			joinColumns= {@JoinColumn(name="message_id")},
+			inverseJoinColumns= {@JoinColumn(name="user_id")}
+			)
+	private Set<User> likes = new HashSet<>();
 	
 	@PreRemove
 	private void removeMessage() {
